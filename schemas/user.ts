@@ -20,6 +20,14 @@ export default list({
       // should be referencable by the 'author' field of posts.
       // Make sure you read the docs to understand how they work: https://keystonejs.com/docs/guides/relationships#understanding-relationships
       posts: relationship({ ref: 'Post.author', many: true }),
+      watching: relationship(
+        { 
+          ref: 'Candidate.watching', 
+          many: true,
+          ui: {
+            hideCreate: true
+          }
+        }),
     },
     // Here we can configure the Admin UI. We want to show a user's name and posts in the Admin UI
     ui: {

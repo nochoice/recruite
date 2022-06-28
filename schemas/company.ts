@@ -1,5 +1,7 @@
 import { list } from "@keystone-6/core";
-import { checkbox, relationship, text } from "@keystone-6/core/fields";
+import { checkbox, image, relationship, text, file} from "@keystone-6/core/fields";
+import address_fields from './address_fields';
+
 
 export default list({
     // Here are the fields that `User` will have. We want an email and password so they can log in
@@ -8,8 +10,7 @@ export default list({
       name: text({
         validation: { isRequired: true },
       }),
-      isComplete: checkbox(),
-      isObsolet: checkbox(),
+      positions: relationship({ ref: 'Position.company', many: true }),
       addresses: relationship({ 
           ref: 'Address', 
           ui: {
@@ -18,10 +19,23 @@ export default list({
             inlineEdit: { fields: ['addressCountry', 'addressLocality'] },
             linkToItem: false,
             inlineConnect: false,
-            inlineCreate: { fields: ['addressCountry', 'addressLocality'] },
+            inlineCreate: { fields: ['addressCountry', 'addressLocality', 'postOfficeBoxNumber', 'streetAddress'] },
           },
           many: true 
       }),
+      contacts: relationship({ 
+        ref: 'Contact', 
+        ui: {
+          displayMode: 'cards',
+          cardFields: ['name', 'surname'],
+          inlineEdit: { fields: ['name', 'surname'] },
+          linkToItem: false,
+          inlineConnect: true,
+          inlineCreate: { fields: ['name', 'surname'] },
+        },
+        many: true 
+      }),
+      contracts: file({ storage: 'company_contract',  }),
     },
     // Here we can configure the Admin UI. We want to show a user's name and posts in the Admin UI
     ui: {
@@ -38,7 +52,9 @@ export default list({
         return false
       },
       
+      
     },
     description: "Pomocoxcxu",
+    
 
   });

@@ -15,6 +15,13 @@ type User {
     skip: Int! = 0
   ): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
+  watching(
+    where: CandidateWhereInput! = {}
+    orderBy: [CandidateOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Candidate!]
+  watchingCount(where: CandidateWhereInput! = {}): Int
 }
 
 type PasswordState {
@@ -36,6 +43,7 @@ input UserWhereInput {
   age: IntNullableFilter
   isGreen: IntNullableFilter
   posts: PostManyRelationFilter
+  watching: CandidateManyRelationFilter
 }
 
 input IDFilter {
@@ -94,6 +102,12 @@ input PostManyRelationFilter {
   none: PostWhereInput
 }
 
+input CandidateManyRelationFilter {
+  every: CandidateWhereInput
+  some: CandidateWhereInput
+  none: CandidateWhereInput
+}
+
 input UserOrderByInput {
   id: OrderDirection
   name: OrderDirection
@@ -114,6 +128,7 @@ input UserUpdateInput {
   isGreen: Int
   password: String
   posts: PostRelateToManyForUpdateInput
+  watching: CandidateRelateToManyForUpdateInput
 }
 
 input PostRelateToManyForUpdateInput {
@@ -121,6 +136,13 @@ input PostRelateToManyForUpdateInput {
   set: [PostWhereUniqueInput!]
   create: [PostCreateInput!]
   connect: [PostWhereUniqueInput!]
+}
+
+input CandidateRelateToManyForUpdateInput {
+  disconnect: [CandidateWhereUniqueInput!]
+  set: [CandidateWhereUniqueInput!]
+  create: [CandidateCreateInput!]
+  connect: [CandidateWhereUniqueInput!]
 }
 
 input UserUpdateArgs {
@@ -135,11 +157,17 @@ input UserCreateInput {
   isGreen: Int
   password: String
   posts: PostRelateToManyForCreateInput
+  watching: CandidateRelateToManyForCreateInput
 }
 
 input PostRelateToManyForCreateInput {
   create: [PostCreateInput!]
   connect: [PostWhereUniqueInput!]
+}
+
+input CandidateRelateToManyForCreateInput {
+  create: [CandidateCreateInput!]
+  connect: [CandidateWhereUniqueInput!]
 }
 
 type Post {
@@ -310,8 +338,13 @@ input AddressRelateToManyForCreateInput {
 type Company {
   id: ID!
   name: String
-  isComplete: Boolean
-  isObsolet: Boolean
+  positions(
+    where: PositionWhereInput! = {}
+    orderBy: [PositionOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Position!]
+  positionsCount(where: PositionWhereInput! = {}): Int
   addresses(
     where: AddressWhereInput! = {}
     orderBy: [AddressOrderByInput!]! = []
@@ -319,6 +352,20 @@ type Company {
     skip: Int! = 0
   ): [Address!]
   addressesCount(where: AddressWhereInput! = {}): Int
+  contacts(
+    where: ContactWhereInput! = {}
+    orderBy: [ContactOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Contact!]
+  contactsCount(where: ContactWhereInput! = {}): Int
+  contracts: FileFieldOutput
+}
+
+type FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  url: String!
 }
 
 input CompanyWhereUniqueInput {
@@ -331,29 +378,58 @@ input CompanyWhereInput {
   NOT: [CompanyWhereInput!]
   id: IDFilter
   name: StringFilter
-  isComplete: BooleanFilter
-  isObsolet: BooleanFilter
+  positions: PositionManyRelationFilter
   addresses: AddressManyRelationFilter
+  contacts: ContactManyRelationFilter
 }
 
-input BooleanFilter {
-  equals: Boolean
-  not: BooleanFilter
+input PositionManyRelationFilter {
+  every: PositionWhereInput
+  some: PositionWhereInput
+  none: PositionWhereInput
+}
+
+input ContactManyRelationFilter {
+  every: ContactWhereInput
+  some: ContactWhereInput
+  none: ContactWhereInput
 }
 
 input CompanyOrderByInput {
   id: OrderDirection
   name: OrderDirection
-  isComplete: OrderDirection
-  isObsolet: OrderDirection
 }
 
 input CompanyUpdateInput {
   name: String
-  isComplete: Boolean
-  isObsolet: Boolean
+  positions: PositionRelateToManyForUpdateInput
   addresses: AddressRelateToManyForUpdateInput
+  contacts: ContactRelateToManyForUpdateInput
+  contracts: FileFieldInput
 }
+
+input PositionRelateToManyForUpdateInput {
+  disconnect: [PositionWhereUniqueInput!]
+  set: [PositionWhereUniqueInput!]
+  create: [PositionCreateInput!]
+  connect: [PositionWhereUniqueInput!]
+}
+
+input ContactRelateToManyForUpdateInput {
+  disconnect: [ContactWhereUniqueInput!]
+  set: [ContactWhereUniqueInput!]
+  create: [ContactCreateInput!]
+  connect: [ContactWhereUniqueInput!]
+}
+
+input FileFieldInput {
+  upload: Upload!
+}
+
+"""
+The `Upload` scalar type represents a file upload.
+"""
+scalar Upload
 
 input CompanyUpdateArgs {
   where: CompanyWhereUniqueInput!
@@ -362,9 +438,20 @@ input CompanyUpdateArgs {
 
 input CompanyCreateInput {
   name: String
-  isComplete: Boolean
-  isObsolet: Boolean
+  positions: PositionRelateToManyForCreateInput
   addresses: AddressRelateToManyForCreateInput
+  contacts: ContactRelateToManyForCreateInput
+  contracts: FileFieldInput
+}
+
+input PositionRelateToManyForCreateInput {
+  create: [PositionCreateInput!]
+  connect: [PositionWhereUniqueInput!]
+}
+
+input ContactRelateToManyForCreateInput {
+  create: [ContactCreateInput!]
+  connect: [ContactWhereUniqueInput!]
 }
 
 type Interview {
@@ -404,7 +491,29 @@ input InterviewCreateInput {
 
 type Candidate {
   id: ID!
-  title: String
+  name: String
+  surname: String
+  email: String
+  phone: String
+  description: Candidate_description_Document
+  watching(
+    where: UserWhereInput! = {}
+    orderBy: [UserOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [User!]
+  watchingCount(where: UserWhereInput! = {}): Int
+  skills(
+    where: CandidateSkillWhereInput! = {}
+    orderBy: [CandidateSkillOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [CandidateSkill!]
+  skillsCount(where: CandidateSkillWhereInput! = {}): Int
+}
+
+type Candidate_description_Document {
+  document(hydrateRelationships: Boolean! = false): JSON!
 }
 
 input CandidateWhereUniqueInput {
@@ -416,16 +525,56 @@ input CandidateWhereInput {
   OR: [CandidateWhereInput!]
   NOT: [CandidateWhereInput!]
   id: IDFilter
-  title: StringFilter
+  name: StringFilter
+  surname: StringFilter
+  email: StringFilter
+  phone: StringFilter
+  watching: UserManyRelationFilter
+  skills: CandidateSkillManyRelationFilter
+}
+
+input UserManyRelationFilter {
+  every: UserWhereInput
+  some: UserWhereInput
+  none: UserWhereInput
+}
+
+input CandidateSkillManyRelationFilter {
+  every: CandidateSkillWhereInput
+  some: CandidateSkillWhereInput
+  none: CandidateSkillWhereInput
 }
 
 input CandidateOrderByInput {
   id: OrderDirection
-  title: OrderDirection
+  name: OrderDirection
+  surname: OrderDirection
+  email: OrderDirection
+  phone: OrderDirection
 }
 
 input CandidateUpdateInput {
-  title: String
+  name: String
+  surname: String
+  email: String
+  phone: String
+  description: JSON
+  watching: UserRelateToManyForUpdateInput
+  skills: CandidateSkillRelateToManyForUpdateInput
+}
+
+input UserRelateToManyForUpdateInput {
+  disconnect: [UserWhereUniqueInput!]
+  set: [UserWhereUniqueInput!]
+  create: [UserCreateInput!]
+  connect: [UserWhereUniqueInput!]
+}
+
+input CandidateSkillRelateToManyForUpdateInput {
+  disconnect: [CandidateSkillWhereUniqueInput!]
+  set: [CandidateSkillWhereUniqueInput!]
+  create: [CandidateSkillCreateInput!]
+  connect: [CandidateSkillWhereUniqueInput!]
 }
 
 input CandidateUpdateArgs {
@@ -434,7 +583,285 @@ input CandidateUpdateArgs {
 }
 
 input CandidateCreateInput {
+  name: String
+  surname: String
+  email: String
+  phone: String
+  description: JSON
+  watching: UserRelateToManyForCreateInput
+  skills: CandidateSkillRelateToManyForCreateInput
+}
+
+input UserRelateToManyForCreateInput {
+  create: [UserCreateInput!]
+  connect: [UserWhereUniqueInput!]
+}
+
+input CandidateSkillRelateToManyForCreateInput {
+  create: [CandidateSkillCreateInput!]
+  connect: [CandidateSkillWhereUniqueInput!]
+}
+
+type CandidateSkill {
+  id: ID!
+  skill: Skill
+  fromDate: DateTime
+  description: String
+}
+
+input CandidateSkillWhereUniqueInput {
+  id: ID
+}
+
+input CandidateSkillWhereInput {
+  AND: [CandidateSkillWhereInput!]
+  OR: [CandidateSkillWhereInput!]
+  NOT: [CandidateSkillWhereInput!]
+  id: IDFilter
+  skill: SkillWhereInput
+  fromDate: DateTimeNullableFilter
+  description: StringFilter
+}
+
+input CandidateSkillOrderByInput {
+  id: OrderDirection
+  fromDate: OrderDirection
+  description: OrderDirection
+}
+
+input CandidateSkillUpdateInput {
+  skill: SkillRelateToOneForUpdateInput
+  fromDate: DateTime
+  description: String
+}
+
+input SkillRelateToOneForUpdateInput {
+  create: SkillCreateInput
+  connect: SkillWhereUniqueInput
+  disconnect: Boolean
+}
+
+input CandidateSkillUpdateArgs {
+  where: CandidateSkillWhereUniqueInput!
+  data: CandidateSkillUpdateInput!
+}
+
+input CandidateSkillCreateInput {
+  skill: SkillRelateToOneForCreateInput
+  fromDate: DateTime
+  description: String
+}
+
+input SkillRelateToOneForCreateInput {
+  create: SkillCreateInput
+  connect: SkillWhereUniqueInput
+}
+
+type Contact {
+  id: ID!
+  image: ImageFieldOutput
+  name: String
+  surname: String
+  description: String
+  phone: String
+  email: String
+}
+
+type ImageFieldOutput {
+  id: ID!
+  filesize: Int!
+  width: Int!
+  height: Int!
+  extension: ImageExtension!
+  url: String!
+}
+
+enum ImageExtension {
+  jpg
+  png
+  webp
+  gif
+}
+
+input ContactWhereUniqueInput {
+  id: ID
+}
+
+input ContactWhereInput {
+  AND: [ContactWhereInput!]
+  OR: [ContactWhereInput!]
+  NOT: [ContactWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  surname: StringFilter
+  description: StringFilter
+  phone: StringFilter
+  email: StringFilter
+}
+
+input ContactOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  surname: OrderDirection
+  description: OrderDirection
+  phone: OrderDirection
+  email: OrderDirection
+}
+
+input ContactUpdateInput {
+  image: ImageFieldInput
+  name: String
+  surname: String
+  description: String
+  phone: String
+  email: String
+}
+
+input ImageFieldInput {
+  upload: Upload!
+}
+
+input ContactUpdateArgs {
+  where: ContactWhereUniqueInput!
+  data: ContactUpdateInput!
+}
+
+input ContactCreateInput {
+  image: ImageFieldInput
+  name: String
+  surname: String
+  description: String
+  phone: String
+  email: String
+}
+
+type ContactType {
+  id: ID!
+  type: ContactTypeTypeType
+  isPrimary: Boolean
+  content: String
+  description: String
+}
+
+enum ContactTypeTypeType {
+  mobile
+  email
+}
+
+input ContactTypeWhereUniqueInput {
+  id: ID
+}
+
+input ContactTypeWhereInput {
+  AND: [ContactTypeWhereInput!]
+  OR: [ContactTypeWhereInput!]
+  NOT: [ContactTypeWhereInput!]
+  id: IDFilter
+  type: ContactTypeTypeTypeNullableFilter
+  isPrimary: BooleanFilter
+  content: StringFilter
+  description: StringFilter
+}
+
+input ContactTypeTypeTypeNullableFilter {
+  equals: ContactTypeTypeType
+  in: [ContactTypeTypeType!]
+  notIn: [ContactTypeTypeType!]
+  not: ContactTypeTypeTypeNullableFilter
+}
+
+input BooleanFilter {
+  equals: Boolean
+  not: BooleanFilter
+}
+
+input ContactTypeOrderByInput {
+  id: OrderDirection
+  type: OrderDirection
+  isPrimary: OrderDirection
+  content: OrderDirection
+  description: OrderDirection
+}
+
+input ContactTypeUpdateInput {
+  type: ContactTypeTypeType
+  isPrimary: Boolean
+  content: String
+  description: String
+}
+
+input ContactTypeUpdateArgs {
+  where: ContactTypeWhereUniqueInput!
+  data: ContactTypeUpdateInput!
+}
+
+input ContactTypeCreateInput {
+  type: ContactTypeTypeType
+  isPrimary: Boolean
+  content: String
+  description: String
+}
+
+type Position {
+  id: ID!
   title: String
+  company: Company
+  description: Position_description_Document
+  active: Boolean
+}
+
+type Position_description_Document {
+  document(hydrateRelationships: Boolean! = false): JSON!
+}
+
+input PositionWhereUniqueInput {
+  id: ID
+}
+
+input PositionWhereInput {
+  AND: [PositionWhereInput!]
+  OR: [PositionWhereInput!]
+  NOT: [PositionWhereInput!]
+  id: IDFilter
+  title: StringFilter
+  company: CompanyWhereInput
+  active: BooleanFilter
+}
+
+input PositionOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+  active: OrderDirection
+}
+
+input PositionUpdateInput {
+  title: String
+  company: CompanyRelateToOneForUpdateInput
+  description: JSON
+  active: Boolean
+}
+
+input CompanyRelateToOneForUpdateInput {
+  create: CompanyCreateInput
+  connect: CompanyWhereUniqueInput
+  disconnect: Boolean
+}
+
+input PositionUpdateArgs {
+  where: PositionWhereUniqueInput!
+  data: PositionUpdateInput!
+}
+
+input PositionCreateInput {
+  title: String
+  company: CompanyRelateToOneForCreateInput
+  description: JSON
+  active: Boolean
+}
+
+input CompanyRelateToOneForCreateInput {
+  create: CompanyCreateInput
+  connect: CompanyWhereUniqueInput
 }
 
 type Address {
@@ -490,6 +917,48 @@ input AddressCreateInput {
   postalCode: String
   postOfficeBoxNumber: String
   streetAddress: String
+}
+
+type Skill {
+  id: ID!
+  title: String
+  description: Skill_description_Document
+}
+
+type Skill_description_Document {
+  document(hydrateRelationships: Boolean! = false): JSON!
+}
+
+input SkillWhereUniqueInput {
+  id: ID
+}
+
+input SkillWhereInput {
+  AND: [SkillWhereInput!]
+  OR: [SkillWhereInput!]
+  NOT: [SkillWhereInput!]
+  id: IDFilter
+  title: StringFilter
+}
+
+input SkillOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+}
+
+input SkillUpdateInput {
+  title: String
+  description: JSON
+}
+
+input SkillUpdateArgs {
+  where: SkillWhereUniqueInput!
+  data: SkillUpdateInput!
+}
+
+input SkillCreateInput {
+  title: String
+  description: JSON
 }
 
 type Tag {
@@ -585,6 +1054,44 @@ type Mutation {
   updateCandidates(data: [CandidateUpdateArgs!]!): [Candidate]
   deleteCandidate(where: CandidateWhereUniqueInput!): Candidate
   deleteCandidates(where: [CandidateWhereUniqueInput!]!): [Candidate]
+  createCandidateSkill(data: CandidateSkillCreateInput!): CandidateSkill
+  createCandidateSkills(data: [CandidateSkillCreateInput!]!): [CandidateSkill]
+  updateCandidateSkill(
+    where: CandidateSkillWhereUniqueInput!
+    data: CandidateSkillUpdateInput!
+  ): CandidateSkill
+  updateCandidateSkills(data: [CandidateSkillUpdateArgs!]!): [CandidateSkill]
+  deleteCandidateSkill(where: CandidateSkillWhereUniqueInput!): CandidateSkill
+  deleteCandidateSkills(
+    where: [CandidateSkillWhereUniqueInput!]!
+  ): [CandidateSkill]
+  createContact(data: ContactCreateInput!): Contact
+  createContacts(data: [ContactCreateInput!]!): [Contact]
+  updateContact(
+    where: ContactWhereUniqueInput!
+    data: ContactUpdateInput!
+  ): Contact
+  updateContacts(data: [ContactUpdateArgs!]!): [Contact]
+  deleteContact(where: ContactWhereUniqueInput!): Contact
+  deleteContacts(where: [ContactWhereUniqueInput!]!): [Contact]
+  createContactType(data: ContactTypeCreateInput!): ContactType
+  createContactTypes(data: [ContactTypeCreateInput!]!): [ContactType]
+  updateContactType(
+    where: ContactTypeWhereUniqueInput!
+    data: ContactTypeUpdateInput!
+  ): ContactType
+  updateContactTypes(data: [ContactTypeUpdateArgs!]!): [ContactType]
+  deleteContactType(where: ContactTypeWhereUniqueInput!): ContactType
+  deleteContactTypes(where: [ContactTypeWhereUniqueInput!]!): [ContactType]
+  createPosition(data: PositionCreateInput!): Position
+  createPositions(data: [PositionCreateInput!]!): [Position]
+  updatePosition(
+    where: PositionWhereUniqueInput!
+    data: PositionUpdateInput!
+  ): Position
+  updatePositions(data: [PositionUpdateArgs!]!): [Position]
+  deletePosition(where: PositionWhereUniqueInput!): Position
+  deletePositions(where: [PositionWhereUniqueInput!]!): [Position]
   createAddress(data: AddressCreateInput!): Address
   createAddresses(data: [AddressCreateInput!]!): [Address]
   updateAddress(
@@ -594,6 +1101,12 @@ type Mutation {
   updateAddresses(data: [AddressUpdateArgs!]!): [Address]
   deleteAddress(where: AddressWhereUniqueInput!): Address
   deleteAddresses(where: [AddressWhereUniqueInput!]!): [Address]
+  createSkill(data: SkillCreateInput!): Skill
+  createSkills(data: [SkillCreateInput!]!): [Skill]
+  updateSkill(where: SkillWhereUniqueInput!, data: SkillUpdateInput!): Skill
+  updateSkills(data: [SkillUpdateArgs!]!): [Skill]
+  deleteSkill(where: SkillWhereUniqueInput!): Skill
+  deleteSkills(where: [SkillWhereUniqueInput!]!): [Skill]
   createTag(data: TagCreateInput!): Tag
   createTags(data: [TagCreateInput!]!): [Tag]
   updateTag(where: TagWhereUniqueInput!, data: TagUpdateInput!): Tag
@@ -670,6 +1183,38 @@ type Query {
   ): [Candidate!]
   candidate(where: CandidateWhereUniqueInput!): Candidate
   candidatesCount(where: CandidateWhereInput! = {}): Int
+  candidateSkills(
+    where: CandidateSkillWhereInput! = {}
+    orderBy: [CandidateSkillOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [CandidateSkill!]
+  candidateSkill(where: CandidateSkillWhereUniqueInput!): CandidateSkill
+  candidateSkillsCount(where: CandidateSkillWhereInput! = {}): Int
+  contacts(
+    where: ContactWhereInput! = {}
+    orderBy: [ContactOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Contact!]
+  contact(where: ContactWhereUniqueInput!): Contact
+  contactsCount(where: ContactWhereInput! = {}): Int
+  contactTypes(
+    where: ContactTypeWhereInput! = {}
+    orderBy: [ContactTypeOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [ContactType!]
+  contactType(where: ContactTypeWhereUniqueInput!): ContactType
+  contactTypesCount(where: ContactTypeWhereInput! = {}): Int
+  positions(
+    where: PositionWhereInput! = {}
+    orderBy: [PositionOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Position!]
+  position(where: PositionWhereUniqueInput!): Position
+  positionsCount(where: PositionWhereInput! = {}): Int
   addresses(
     where: AddressWhereInput! = {}
     orderBy: [AddressOrderByInput!]! = []
@@ -678,6 +1223,14 @@ type Query {
   ): [Address!]
   address(where: AddressWhereUniqueInput!): Address
   addressesCount(where: AddressWhereInput! = {}): Int
+  skills(
+    where: SkillWhereInput! = {}
+    orderBy: [SkillOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Skill!]
+  skill(where: SkillWhereUniqueInput!): Skill
+  skillsCount(where: SkillWhereInput! = {}): Int
   tags(
     where: TagWhereInput! = {}
     orderBy: [TagOrderByInput!]! = []

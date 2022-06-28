@@ -14,6 +14,8 @@ import { lists } from './schema';
 // Keystone auth is configured separately - check out the basic auth setup we are importing from our auth file.
 import { withAuth, session } from './auth';
 
+const baseUrl = 'http://localhost:3000';
+
 export default withAuth(
   // Using the config function helps typescript guide you to the available options.
   config({
@@ -29,6 +31,35 @@ export default withAuth(
       isAccessAllowed: (context) => !!context.session?.data,
     },
     lists,
+    storage: {
+      // The key here will be what is referenced in the image field
+      my_local_images: {
+        // Images that use this store will be stored on the local machine
+        kind: 'local',
+        // This store is used for the image field type
+        type: 'image',
+        // The URL that is returned in the Keystone GraphQL API
+        generateUrl: path => `${baseUrl}/images${path}`,
+        // The route that will be created in Keystone's backend to serve the images
+        serverRoute: {
+          path: '/images',
+        },
+        storagePath: 'public/images',
+      },
+      company_contract: {
+        // Images that use this store will be stored on the local machine
+        kind: 'local',
+        // This store is used for the image field type
+        type: 'file',
+        // The URL that is returned in the Keystone GraphQL API
+        generateUrl: path => `${baseUrl}/contracts${path}`,
+        // The route that will be created in Keystone's backend to serve the images
+        serverRoute: {
+          path: '/contracts',
+        },
+        storagePath: 'public/contracts',
+      },
+    },
     session,
   })
 );
