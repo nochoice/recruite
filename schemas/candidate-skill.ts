@@ -14,5 +14,6 @@ export default list({
       listView: {
         initialColumns: ['skill', 'fromDate'],
       },
+      isHidden: true
     },
   });

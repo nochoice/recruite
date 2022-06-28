@@ -19,7 +19,7 @@ export default list({
       // we want a user to have many posts, and we are saying that the user
       // should be referencable by the 'author' field of posts.
       // Make sure you read the docs to understand how they work: https://keystonejs.com/docs/guides/relationships#understanding-relationships
-      posts: relationship({ ref: 'Post.author', many: true }),
+      // posts: relationship({ ref: 'Post.author', many: true }),
       watching: relationship(
         { 
           ref: 'Candidate.watching', 

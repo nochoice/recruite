@@ -12,8 +12,13 @@ export default list({
       surname: text({
         validation: { isRequired: true },
       }),
-      email: text(),
+      email: text(
+        {
+          isIndexed: 'unique',
+        }
+      ),
       phone: text(),
+      linkedIn: text(),
       description: document({
         formatting: true,
         dividers: true,
@@ -32,6 +37,10 @@ export default list({
           cardFields: ['skill', 'fromDate'],
           inlineCreate: { fields: ['skill', 'fromDate'] },
         }
+      }),
+      documents: relationship({ 
+        ref: 'CandidateDocument', 
+        many: true
       }),
     },
     // Here we can configure the Admin UI. We want to show a user's name and posts in the Admin UI

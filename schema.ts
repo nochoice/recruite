@@ -44,14 +44,16 @@ import ContactSchema from './schemas/contact';
 import ContactTypeSchema from './schemas/contact-type';
 import PositionSchema from './schemas/position';
 import SkillSchema from './schemas/skill';
+import CandidateDocumentSchema from './schemas/candidate-document';
 
 export const lists: Lists = {
   User: UserSchema,
-  Post: PostSchema,
+  // Post: PostSchema,
   Company: CompanySchema,
   Interview: InterviewSchema,
   Candidate: CandidateSchema,
   CandidateSkill: CandidateSkillSchema,
+  CandidateDocument: CandidateDocumentSchema,
   Contact: ContactSchema,
   ContactType: ContactTypeSchema,
   Position: PositionSchema,
@@ -59,13 +61,13 @@ export const lists: Lists = {
   Address: AddressSchema,
   Skill: SkillSchema,
 
-  Tag: list({
-    ui: {
-      isHidden: true,
-    },
-    fields: {
-      name: text(),
-      posts: relationship({ ref: 'Post.tags', many: true }),
-    },
-  }),
+  // Tag: list({
+  //   ui: {
+  //     isHidden: true,
+  //   },
+  //   fields: {
+  //     name: text(),
+  //     posts: relationship({ ref: 'Post.tags', many: true }),
+  //   },
+  // }),
 };

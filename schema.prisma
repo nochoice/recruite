@@ -18,48 +18,52 @@ model User {
   age      Int?
   isGreen  Int?
   password String
-  posts    Post[]      @relation("Post_author")
   watching Candidate[] @relation("Candidate_watching")
 }
 
-model Post {
-  id          String    @id @default(cuid())
-  title       String    @default("")
-  status      String?   @default("draft")
-  content     String    @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
-  publishDate DateTime?
-  author      User?     @relation("Post_author", fields: [authorId], references: [id])
-  authorId    String?   @map("author")
-  tags        Tag[]     @relation("Post_tags")
-  addresses   Address[] @relation("Post_addresses")
-
-  @@index([authorId])
-}
-
 model Company {
-  id                 String     @id @default(cuid())
-  name               String     @default("")
-  positions          Position[] @relation("Position_company")
-  addresses          Address[]  @relation("Company_addresses")
-  contacts           Contact[]  @relation("Company_contacts")
-  contracts_filesize Int?
-  contracts_filename String?
+  id                     String      @id @default(cuid())
+  name                   String      @default("")
+  positions              Position[]  @relation("Position_company")
+  addresses              Address[]   @relation("Company_addresses")
+  contacts               Contact[]   @relation("Company_contacts")
+  contracts_filesize     Int?
+  contracts_filename     String?
+  from_Interview_company Interview[] @relation("Interview_company")
 }
 
 model Interview {
-  id    String @id @default(cuid())
-  title String @default("")
+  id          String     @id @default(cuid())
+  title       String     @default("")
+  date        DateTime
+  canditate   Candidate? @relation("Interview_canditate", fields: [canditateId], references: [id])
+  canditateId String?    @map("canditate")
+  company     Company?   @relation("Interview_company", fields: [companyId], references: [id])
+  companyId   String?    @map("company")
+  contact     Contact?   @relation("Interview_contact", fields: [contactId], references: [id])
+  contactId   String?    @map("contact")
+  position    Position?  @relation("Interview_position", fields: [positionId], references: [id])
+  positionId  String?    @map("position")
+  description String     @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
+
+  @@index([canditateId])
+  @@index([companyId])
+  @@index([contactId])
+  @@index([positionId])
 }
 
 model Candidate {
-  id          String           @id @default(cuid())
-  name        String           @default("")
-  surname     String           @default("")
-  email       String           @default("")
-  phone       String           @default("")
-  description String           @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
-  watching    User[]           @relation("Candidate_watching")
-  skills      CandidateSkill[] @relation("Candidate_skills")
+  id                       String              @id @default(cuid())
+  name                     String              @default("")
+  surname                  String              @default("")
+  email                    String              @unique @default("")
+  phone                    String              @default("")
+  linkedIn                 String              @default("")
+  description              String              @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
+  watching                 User[]              @relation("Candidate_watching")
+  skills                   CandidateSkill[]    @relation("Candidate_skills")
+  documents                CandidateDocument[] @relation("Candidate_documents")
+  from_Interview_canditate Interview[]         @relation("Interview_canditate")
 }
 
 model CandidateSkill {
@@ -73,19 +77,28 @@ model CandidateSkill {
   @@index([skillId])
 }
 
+model CandidateDocument {
+  id                       String      @id @default(cuid())
+  type                     String?
+  document_filesize        Int?
+  document_filename        String?
+  from_Candidate_documents Candidate[] @relation("Candidate_documents")
+}
+
 model Contact {
-  id                    String    @id @default(cuid())
-  image_filesize        Int?
-  image_extension       String?
-  image_width           Int?
-  image_height          Int?
-  image_id              String?
-  name                  String    @default("")
-  surname               String    @default("")
-  description           String    @default("")
-  phone                 String    @default("")
-  email                 String    @default("")
-  from_Company_contacts Company[] @relation("Company_contacts")
+  id                     String      @id @default(cuid())
+  image_filesize         Int?
+  image_extension        String?
+  image_width            Int?
+  image_height           Int?
+  image_id               String?
+  name                   String      @default("")
+  surname                String      @default("")
+  description            String      @default("")
+  phone                  String      @default("")
+  email                  String      @unique @default("")
+  from_Company_contacts  Company[]   @relation("Company_contacts")
+  from_Interview_contact Interview[] @relation("Interview_contact")
 }
 
 model ContactType {
@@ -97,12 +110,13 @@ model ContactType {
 }
 
 model Position {
-  id          String   @id @default(cuid())
-  title       String   @default("")
-  company     Company? @relation("Position_company", fields: [companyId], references: [id])
-  companyId   String?  @map("company")
-  description String   @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
-  active      Boolean  @default(false)
+  id                      String      @id @default(cuid())
+  title                   String      @default("")
+  company                 Company?    @relation("Position_company", fields: [companyId], references: [id])
+  companyId               String?     @map("company")
+  description             String      @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
+  active                  Boolean     @default(false)
+  from_Interview_position Interview[] @relation("Interview_position")
 
   @@index([companyId])
 }
@@ -114,19 +128,12 @@ model Address {
   postalCode             String    @default("")
   postOfficeBoxNumber    String    @default("")
   streetAddress          String    @default("")
-  from_Post_addresses    Post[]    @relation("Post_addresses")
   from_Company_addresses Company[] @relation("Company_addresses")
 }
 
 model Skill {
   id                        String           @id @default(cuid())
-  title                     String           @default("")
+  title                     String           @unique @default("")
   description               String           @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
   from_CandidateSkill_skill CandidateSkill[] @relation("CandidateSkill_skill")
-}
-
-model Tag {
-  id    String @id @default(cuid())
-  name  String @default("")
-  posts Post[] @relation("Post_tags")
 }

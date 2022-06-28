@@ -41,7 +41,7 @@ export default list({
     ui: {
       labelField: 'name',
       listView: {
-        initialColumns: ['id', 'name'],
+        initialColumns: ['name', 'contacts'],
         defaultFieldMode: 'read'
       },
       itemView: { 
@@ -54,7 +54,7 @@ export default list({
       
       
     },
-    description: "Pomocoxcxu",
+    description: "",
     
 
   });

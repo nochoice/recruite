@@ -3,10 +3,10 @@ import { text } from "@keystone-6/core/fields";
 import { document } from "@keystone-6/fields-document";
 
 export default list({
-    // Here are the fields that `User` will have. We want an email and password so they can log in
-    // a name so we can refer to them, and a way to connect users to posts.
     fields: {
-      title: text(),
+      title: text({
+        isIndexed: 'unique',
+      }),
       description: document({
         // componentBlocks: true,
         formatting: true,

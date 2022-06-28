@@ -14,7 +14,9 @@ export default list({
         }),
         description: text(),
         phone: text(),
-        email: text(),
+        email: text(
+            {isIndexed: 'unique'}
+        ),
         // contacts: relationship({ 
         //     ref: 'ContactType', 
         //     ui: {

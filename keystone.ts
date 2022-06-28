@@ -14,6 +14,8 @@ import { lists } from './schema';
 // Keystone auth is configured separately - check out the basic auth setup we are importing from our auth file.
 import { withAuth, session } from './auth';
 
+import { insertSeedData } from './seed-data'
+
 const baseUrl = 'http://localhost:3000';
 
 export default withAuth(
@@ -23,7 +25,12 @@ export default withAuth(
     db: {
       provider: 'sqlite',
       url: 'file:./keystone.db',
-      useMigrations: true
+      useMigrations: true,
+      async onConnect(context) {
+        if (process.argv.includes('--seed-data')) {
+          await insertSeedData(context);
+        }
+      },
     },
     // This config allows us to set up features of the Admin UI https://keystonejs.com/docs/apis/config#ui
     ui: {
@@ -59,6 +66,22 @@ export default withAuth(
         },
         storagePath: 'public/contracts',
       },
+
+      candidate_documents: {
+        // Images that use this store will be stored on the local machine
+        kind: 'local',
+        // This store is used for the image field type
+        type: 'file',
+        // The URL that is returned in the Keystone GraphQL API
+        generateUrl: path => `${baseUrl}/candidate-documents${path}`,
+        // The route that will be created in Keystone's backend to serve the images
+        serverRoute: {
+          path: '/candidate-documents',
+        },
+        storagePath: 'public/candidate-documents',
+      },
+
+      
     },
     session,
   })
