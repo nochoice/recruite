@@ -10,6 +10,7 @@ export default list({
       name: text({
         validation: { isRequired: true },
       }),
+
       positions: relationship({ ref: 'Position.company', many: true }),
       addresses: relationship({ 
           ref: 'Address', 
@@ -25,17 +26,18 @@ export default list({
       }),
       contacts: relationship({ 
         ref: 'Contact', 
-        ui: {
-          displayMode: 'cards',
-          cardFields: ['name', 'surname'],
-          inlineEdit: { fields: ['name', 'surname'] },
-          linkToItem: false,
-          inlineConnect: true,
-          inlineCreate: { fields: ['name', 'surname'] },
-        },
+        // ui: {
+        //   displayMode: 'cards',
+        //   cardFields: ['name', 'surname'],
+        //   inlineEdit: { fields: ['name', 'surname'] },
+        //   linkToItem: false,
+        //   inlineConnect: true,
+        //   inlineCreate: { fields: ['name', 'surname'] },
+        // },
         many: true 
       }),
       contracts: file({ storage: 'company_contract',  }),
+      logo: image({ storage: 'my_local_images' }),
     },
     // Here we can configure the Admin UI. We want to show a user's name and posts in the Admin UI
     ui: {

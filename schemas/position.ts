@@ -10,6 +10,8 @@ export default list({
         validation: { isRequired: true },
       }),
       company: relationship({ ref: 'Company.positions', many: false }),
+      contacts: relationship({ ref: 'Contact', many: true }),
+      
       description: document({
         // componentBlocks: true,
         formatting: true,

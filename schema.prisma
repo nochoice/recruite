@@ -12,13 +12,21 @@ generator client {
 }
 
 model User {
-  id       String      @id @default(cuid())
-  name     String      @default("")
-  email    String      @unique @default("")
-  age      Int?
-  isGreen  Int?
-  password String
-  watching Candidate[] @relation("Candidate_watching")
+  id              String      @id @default(cuid())
+  name            String      @default("")
+  firstName       String      @default("")
+  lastName        String      @default("")
+  image_filesize  Int?
+  image_extension String?
+  image_width     Int?
+  image_height    Int?
+  image_id        String?
+  phone           String      @default("")
+  linkedIn        String      @default("")
+  email           String      @unique @default("")
+  description     String      @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
+  password        String
+  watching        Candidate[] @relation("Candidate_watching")
 }
 
 model Company {
@@ -29,6 +37,11 @@ model Company {
   contacts               Contact[]   @relation("Company_contacts")
   contracts_filesize     Int?
   contracts_filename     String?
+  logo_filesize          Int?
+  logo_extension         String?
+  logo_width             Int?
+  logo_height            Int?
+  logo_id                String?
   from_Interview_company Interview[] @relation("Interview_company")
 }
 
@@ -40,15 +53,13 @@ model Interview {
   canditateId String?    @map("canditate")
   company     Company?   @relation("Interview_company", fields: [companyId], references: [id])
   companyId   String?    @map("company")
-  contact     Contact?   @relation("Interview_contact", fields: [contactId], references: [id])
-  contactId   String?    @map("contact")
+  contact     Contact[]  @relation("Interview_contact")
   position    Position?  @relation("Interview_position", fields: [positionId], references: [id])
   positionId  String?    @map("position")
   description String     @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
 
   @@index([canditateId])
   @@index([companyId])
-  @@index([contactId])
   @@index([positionId])
 }
 
@@ -99,6 +110,7 @@ model Contact {
   email                  String      @unique @default("")
   from_Company_contacts  Company[]   @relation("Company_contacts")
   from_Interview_contact Interview[] @relation("Interview_contact")
+  from_Position_contacts Position[]  @relation("Position_contacts")
 }
 
 model ContactType {
@@ -114,6 +126,7 @@ model Position {
   title                   String      @default("")
   company                 Company?    @relation("Position_company", fields: [companyId], references: [id])
   companyId               String?     @map("company")
+  contacts                Contact[]   @relation("Position_contacts")
   description             String      @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
   active                  Boolean     @default(false)
   from_Interview_position Interview[] @relation("Interview_position")

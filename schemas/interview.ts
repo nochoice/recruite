@@ -14,7 +14,7 @@ export default list({
       }),
       canditate: relationship({ ref: 'Candidate' }),
       company: relationship({ ref: 'Company' }),
-      contact: relationship({ ref: 'Contact' }),
+      contact: relationship({ ref: 'Contact', many: true }),
       position: relationship({ ref: 'Position' }),
       description: document({
         formatting: true,
@@ -29,7 +29,7 @@ export default list({
     // Here we can configure the Admin UI. We want to show a user's name and posts in the Admin UI
     ui: {
       itemView: {
-        defaultFieldMode: 'hidden'
+        // defaultFieldMode: 'hidden'
       },
       listView: {
         initialColumns: ['title'],
