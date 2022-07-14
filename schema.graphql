@@ -328,6 +328,8 @@ type Interview {
   description: Interview_description_Document
   updatedAt: DateTime
   createdAt: DateTime
+  updatedBy: User
+  createdBy: User
 }
 
 scalar DateTime
@@ -354,6 +356,8 @@ input InterviewWhereInput {
   position: PositionWhereInput
   updatedAt: DateTimeNullableFilter
   createdAt: DateTimeNullableFilter
+  updatedBy: UserWhereInput
+  createdBy: UserWhereInput
 }
 
 input DateTimeFilter {
@@ -396,6 +400,8 @@ input InterviewUpdateInput {
   description: JSON
   updatedAt: DateTime
   createdAt: DateTime
+  updatedBy: UserRelateToOneForUpdateInput
+  createdBy: UserRelateToOneForUpdateInput
 }
 
 input CandidateRelateToOneForUpdateInput {
@@ -416,6 +422,12 @@ input PositionRelateToOneForUpdateInput {
   disconnect: Boolean
 }
 
+input UserRelateToOneForUpdateInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
+  disconnect: Boolean
+}
+
 input InterviewUpdateArgs {
   where: InterviewWhereUniqueInput!
   data: InterviewUpdateInput!
@@ -431,6 +443,8 @@ input InterviewCreateInput {
   description: JSON
   updatedAt: DateTime
   createdAt: DateTime
+  updatedBy: UserRelateToOneForCreateInput
+  createdBy: UserRelateToOneForCreateInput
 }
 
 input CandidateRelateToOneForCreateInput {
@@ -446,6 +460,11 @@ input CompanyRelateToOneForCreateInput {
 input PositionRelateToOneForCreateInput {
   create: PositionCreateInput
   connect: PositionWhereUniqueInput
+}
+
+input UserRelateToOneForCreateInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
 }
 
 type Candidate {

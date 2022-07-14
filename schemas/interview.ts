@@ -2,6 +2,7 @@ import { list } from '@keystone-6/core';
 import { relationship, text, timestamp } from '@keystone-6/core/fields';
 import { document } from '@keystone-6/fields-document';
 import { PluginAtTracking } from '../plugins/atTracking';
+import { PluginByTracking } from '../plugins/byTracking';
 
 export default list({
     fields: {
@@ -24,7 +25,8 @@ export default list({
           [1, 1, 1],
         ],
       }),
-      ...PluginAtTracking
+      ...PluginAtTracking,
+      ...PluginByTracking
     },
     ui: {
       itemView: {
