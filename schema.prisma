@@ -12,21 +12,23 @@ generator client {
 }
 
 model User {
-  id              String      @id @default(cuid())
-  name            String      @default("")
-  firstName       String      @default("")
-  lastName        String      @default("")
-  image_filesize  Int?
-  image_extension String?
-  image_width     Int?
-  image_height    Int?
-  image_id        String?
-  phone           String      @default("")
-  linkedIn        String      @default("")
-  email           String      @unique @default("")
-  description     String      @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
-  password        String
-  watching        Candidate[] @relation("Candidate_watching")
+  id                       String      @id @default(cuid())
+  name                     String      @default("")
+  firstName                String      @default("")
+  lastName                 String      @default("")
+  image_filesize           Int?
+  image_extension          String?
+  image_width              Int?
+  image_height             Int?
+  image_id                 String?
+  phone                    String      @default("")
+  linkedIn                 String      @default("")
+  email                    String      @unique @default("")
+  description              String      @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
+  password                 String
+  watching                 Candidate[] @relation("Candidate_watching")
+  from_Interview_updatedBy Interview[] @relation("Interview_updatedBy")
+  from_Interview_createdBy Interview[] @relation("Interview_createdBy")
 }
 
 model Company {
@@ -59,10 +61,16 @@ model Interview {
   description String     @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
   updatedAt   DateTime?
   createdAt   DateTime?
+  updatedBy   User?      @relation("Interview_updatedBy", fields: [updatedById], references: [id])
+  updatedById String?    @map("updatedBy")
+  createdBy   User?      @relation("Interview_createdBy", fields: [createdById], references: [id])
+  createdById String?    @map("createdBy")
 
   @@index([canditateId])
   @@index([companyId])
   @@index([positionId])
+  @@index([updatedById])
+  @@index([createdById])
 }
 
 model Candidate {
