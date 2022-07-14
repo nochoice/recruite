@@ -57,6 +57,8 @@ model Interview {
   position    Position?  @relation("Interview_position", fields: [positionId], references: [id])
   positionId  String?    @map("position")
   description String     @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
+  updatedAt   DateTime?
+  createdAt   DateTime?
 
   @@index([canditateId])
   @@index([companyId])

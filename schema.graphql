@@ -326,6 +326,8 @@ type Interview {
   contactCount(where: ContactWhereInput! = {}): Int
   position: Position
   description: Interview_description_Document
+  updatedAt: DateTime
+  createdAt: DateTime
 }
 
 scalar DateTime
@@ -350,6 +352,8 @@ input InterviewWhereInput {
   company: CompanyWhereInput
   contact: ContactManyRelationFilter
   position: PositionWhereInput
+  updatedAt: DateTimeNullableFilter
+  createdAt: DateTimeNullableFilter
 }
 
 input DateTimeFilter {
@@ -363,10 +367,23 @@ input DateTimeFilter {
   not: DateTimeFilter
 }
 
+input DateTimeNullableFilter {
+  equals: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
+  not: DateTimeNullableFilter
+}
+
 input InterviewOrderByInput {
   id: OrderDirection
   title: OrderDirection
   date: OrderDirection
+  updatedAt: OrderDirection
+  createdAt: OrderDirection
 }
 
 input InterviewUpdateInput {
@@ -377,6 +394,8 @@ input InterviewUpdateInput {
   contact: ContactRelateToManyForUpdateInput
   position: PositionRelateToOneForUpdateInput
   description: JSON
+  updatedAt: DateTime
+  createdAt: DateTime
 }
 
 input CandidateRelateToOneForUpdateInput {
@@ -410,6 +429,8 @@ input InterviewCreateInput {
   contact: ContactRelateToManyForCreateInput
   position: PositionRelateToOneForCreateInput
   description: JSON
+  updatedAt: DateTime
+  createdAt: DateTime
 }
 
 input CandidateRelateToOneForCreateInput {
@@ -593,17 +614,6 @@ input CandidateSkillWhereInput {
   skill: SkillWhereInput
   fromDate: DateTimeNullableFilter
   description: StringFilter
-}
-
-input DateTimeNullableFilter {
-  equals: DateTime
-  in: [DateTime!]
-  notIn: [DateTime!]
-  lt: DateTime
-  lte: DateTime
-  gt: DateTime
-  gte: DateTime
-  not: DateTimeNullableFilter
 }
 
 input CandidateSkillOrderByInput {
