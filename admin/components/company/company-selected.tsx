@@ -20,6 +20,7 @@ export default function CompanySelected({company}: Props) {
                         sx={{ height: 140 }}
                         image={company?.logo?.url}
                         alt={company.name}
+                        data-testid="company-logo"
                     />
                 )}
                 

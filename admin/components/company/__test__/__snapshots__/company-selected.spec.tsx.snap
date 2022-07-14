@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CompanySelected should render 1`] = `
+<div>
+  <div
+    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root css-bhp9pd-MuiPaper-root-MuiCard-root"
+  >
+    <div
+      class="MuiCardContent-root css-46bh2p-MuiCardContent-root"
+    >
+      <img
+        alt="No Choice"
+        class="MuiCardMedia-root MuiCardMedia-media MuiCardMedia-img css-pp913-MuiCardMedia-root"
+        data-testid="company-logo"
+        src="http://url.com"
+      />
+      <div
+        class="MuiTypography-root MuiTypography-h5 MuiTypography-alignCenter css-ph2xsj-MuiTypography-root"
+      >
+        No Choice
+      </div>
+    </div>
+  </div>
+</div>
+`;
