@@ -1004,6 +1004,58 @@ input SkillCreateInput {
   description: JSON
 }
 
+type ActivityTracking {
+  id: ID!
+  operation: String
+  schemaKey: String
+  user: User
+  data: JSON
+  createdAt: DateTime
+}
+
+input ActivityTrackingWhereUniqueInput {
+  id: ID
+}
+
+input ActivityTrackingWhereInput {
+  AND: [ActivityTrackingWhereInput!]
+  OR: [ActivityTrackingWhereInput!]
+  NOT: [ActivityTrackingWhereInput!]
+  id: IDFilter
+  operation: StringFilter
+  schemaKey: StringFilter
+  user: UserWhereInput
+  createdAt: DateTimeNullableFilter
+}
+
+input ActivityTrackingOrderByInput {
+  id: OrderDirection
+  operation: OrderDirection
+  schemaKey: OrderDirection
+  createdAt: OrderDirection
+}
+
+input ActivityTrackingUpdateInput {
+  operation: String
+  schemaKey: String
+  user: UserRelateToOneForUpdateInput
+  data: JSON
+  createdAt: DateTime
+}
+
+input ActivityTrackingUpdateArgs {
+  where: ActivityTrackingWhereUniqueInput!
+  data: ActivityTrackingUpdateInput!
+}
+
+input ActivityTrackingCreateInput {
+  operation: String
+  schemaKey: String
+  user: UserRelateToOneForCreateInput
+  data: JSON
+  createdAt: DateTime
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -1118,6 +1170,23 @@ type Mutation {
   updateSkills(data: [SkillUpdateArgs!]!): [Skill]
   deleteSkill(where: SkillWhereUniqueInput!): Skill
   deleteSkills(where: [SkillWhereUniqueInput!]!): [Skill]
+  createActivityTracking(data: ActivityTrackingCreateInput!): ActivityTracking
+  createActivityTrackings(
+    data: [ActivityTrackingCreateInput!]!
+  ): [ActivityTracking]
+  updateActivityTracking(
+    where: ActivityTrackingWhereUniqueInput!
+    data: ActivityTrackingUpdateInput!
+  ): ActivityTracking
+  updateActivityTrackings(
+    data: [ActivityTrackingUpdateArgs!]!
+  ): [ActivityTracking]
+  deleteActivityTracking(
+    where: ActivityTrackingWhereUniqueInput!
+  ): ActivityTracking
+  deleteActivityTrackings(
+    where: [ActivityTrackingWhereUniqueInput!]!
+  ): [ActivityTracking]
   endSession: Boolean!
   authenticateUserWithPassword(
     email: String!
@@ -1238,6 +1307,14 @@ type Query {
   ): [Skill!]
   skill(where: SkillWhereUniqueInput!): Skill
   skillsCount(where: SkillWhereInput! = {}): Int
+  activityTrackings(
+    where: ActivityTrackingWhereInput! = {}
+    orderBy: [ActivityTrackingOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [ActivityTracking!]
+  activityTracking(where: ActivityTrackingWhereUniqueInput!): ActivityTracking
+  activityTrackingsCount(where: ActivityTrackingWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

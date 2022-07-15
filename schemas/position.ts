@@ -1,10 +1,14 @@
-import { list } from "@keystone-6/core";
-import { checkbox, relationship, text } from "@keystone-6/core/fields";
-import { document } from "@keystone-6/fields-document";
+import { list } from '@keystone-6/core';
+import { checkbox, relationship, text } from '@keystone-6/core/fields';
+import { document } from '@keystone-6/fields-document';
+import { PluginActivityTracking } from '../plugins/activityTracking';
 
 export default list({
-    // Here are the fields that `User` will have. We want an email and password so they can log in
-    // a name so we can refer to them, and a way to connect users to posts.
+    hooks: {
+      afterOperation: async (data: any) => {
+        PluginActivityTracking(data);
+      }
+    },
     fields: {
       title: text({
         validation: { isRequired: true },

@@ -1,10 +1,14 @@
-import { list } from "@keystone-6/core";
-import { image, integer, password, relationship, text } from "@keystone-6/core/fields";
-import { document } from "@keystone-6/fields-document";
+import { PluginActivityTracking } from './../plugins/activityTracking';
+import { list } from '@keystone-6/core';
+import { image, password, relationship, text } from '@keystone-6/core/fields';
+import { document } from '@keystone-6/fields-document';
 
 export default list({
-    // Here are the fields that `User` will have. We want an email and password so they can log in
-    // a name so we can refer to them, and a way to connect users to posts.
+    hooks: {
+      afterOperation: async (data: any) => {
+        PluginActivityTracking(data);
+      }
+    },
     fields: {
       name: text({ validation: { isRequired: true } }),
       firstName: text(),
@@ -26,7 +30,6 @@ export default list({
           [1, 1, 1],
         ],
       }),
-      // The password field takes care of hiding details and hashing values
       password: password({ validation: { isRequired: true } }),
       watching: relationship(
         { 
