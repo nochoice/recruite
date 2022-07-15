@@ -1,8 +1,14 @@
 import { list } from "@keystone-6/core";
 import { text } from "@keystone-6/core/fields";
 import { document } from "@keystone-6/fields-document";
+import { PluginActivityTracking } from "../plugins/activityTracking";
 
 export default list({
+  hooks: {
+    afterOperation: async (data: any) => {
+      PluginActivityTracking(data);
+    }
+  },
     fields: {
       title: text({
         isIndexed: 'unique',

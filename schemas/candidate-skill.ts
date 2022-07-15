@@ -1,5 +1,6 @@
 import { graphql, list } from "@keystone-6/core";
 import { image, text, select, checkbox, relationship, timestamp, virtual } from "@keystone-6/core/fields";
+import { PluginActivityTracking } from "../plugins/activityTracking";
 
 export default list({
     // Here are the fields that `User` will have. We want an email and password so they can log in
@@ -8,6 +9,11 @@ export default list({
       skill: relationship({ ref: 'Skill', many: false }),
       fromDate: timestamp(),
       description: text()
+    },
+    hooks: {
+      afterOperation: async (data: any) =>  {
+        PluginActivityTracking(data)
+      }
     },
     // Here we can configure the Admin UI. We want to show a user's name and posts in the Admin UI
     ui: {
